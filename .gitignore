@@ -29,3 +29,6 @@ geodetic_survey_bags/*.bag
 *.symvers
 *.order
 
+# vim swap files
+*.swp
+*.swo

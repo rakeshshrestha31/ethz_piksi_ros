@@ -9,7 +9,7 @@ interface: 'serial'
 base_station_mode: false
 
 # if true, output every topic read by this driver.
-debug_mode: false
+debug_mode: true
 
 # if true the driver is verbose.
 driver_verbose: true
@@ -53,7 +53,7 @@ serial_port: '/dev/ttyUSB0'
 # baud_rate: defines the rate for the serial connection. This driver uses
 # 230400 as the default. Swift Navigation receivers ship with a
 # default baud rate of 115200.
-baud_rate: 230400
+baud_rate: 115200
 
 # TCP Settings
 

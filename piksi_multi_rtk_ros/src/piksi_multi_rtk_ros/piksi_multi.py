@@ -11,7 +11,8 @@ import rospy
 import math
 import quaternion
 import numpy as np
-import datetime, time, leapseconds
+import datetime, time
+from . import leapseconds
 from collections import deque
 import std_srvs.srv
 # Import message types
@@ -48,7 +49,7 @@ from sbp.ext_events import *
 # At the moment importing 'sbp.version' module causes ValueError: Cannot find the version number!
 # import sbp.version
 # networking stuff
-import UdpHelpers
+from . import UdpHelpers
 import time
 import subprocess
 import re
@@ -502,13 +503,13 @@ class PiksiMulti:
             # Search for 'min/avg/max/mdev' round trip delay time (rtt) numbers.
             matcher = re.compile("(\d+.\d+)/(\d+.\d+)/(\d+.\d+)/(\d+.\d+)")
 
-            if matcher.search(out) == None:
+            if matcher.search(out.decode('utf-8')) == None:
                 # No ping response within ping_deadline_seconds.
                 # In python write and read operations on built-in type are atomic,
                 # there's no need to use mutex.
                 self.num_wifi_corrections.latency = -1
             else:
-                groups_rtt = matcher.search(out).groups()
+                groups_rtt = matcher.search(out.decode('utf-8')).groups()
                 avg_rtt = groups_rtt[1]
                 # In python write and read operations on built-in type are atomic,
                 # there's no need to use mutex.
@@ -721,7 +722,7 @@ class PiksiMulti:
                 rospy.signal_shutdown("Watchdog triggered, was gps disconnected?")
 
     def gps_time_to_utc(self, wn, tow, ns_residual):
-        epoch = datetime.datetime(1980,01,06)
+        epoch = datetime.datetime(1980,1,6)
         secs, msecs = divmod(tow, 1000)
         usec = ns_residual / 1000.0 # TODO(rikba): Handle nanoseconds.
         elapsed = datetime.timedelta(seconds=secs, microseconds=usec, milliseconds=msecs, weeks=wn)
@@ -1453,7 +1454,7 @@ class PiksiMulti:
         out, error = pip_show_output.communicate()
 
         # Search for version number, output assumed in the form "Version: X.X.X"
-        version_output = re.search("Version: \d+.\d+.\d+", out)
+        version_output = re.search("Version: \d+.\d+.\d+", out.decode('utf-8'))
 
         if version_output is None:
             # No version found
